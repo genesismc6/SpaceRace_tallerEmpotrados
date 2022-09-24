@@ -1,6 +1,5 @@
-
 unsigned short score[] = {0,0};
-unsigned short minutes = 0;
+unsigned short minutes = 64;
 unsigned short seconds = 0; 
 unsigned short areaX = 0;
 unsigned short areaY = 0;
@@ -17,10 +16,11 @@ typedef struct debris{
     unsigned short x;
     unsigned short y;
     signed short dx;
+	signed short dir;
 }escombro;
 
 ships ship[2];
-escombro debris[16];
+escombro debris[14];
 
 char info[9];
 
@@ -37,6 +37,11 @@ void draw_player(unsigned short x, unsigned short y,unsigned short color){
         Glcd_Dot(y+1, x+5, color);
         Glcd_Dot(y, x+6, color);
         Glcd_Dot(y+6, x+5, color);
+}
+
+void draw_time(){
+	Glcd_V_Line(minutes,64,64,0);
+	Glcd_V_Line(0,minutes,64,1);
 }
 
 void erase_player(unsigned short x, unsigned short y,unsigned short direction){
@@ -56,20 +61,32 @@ void move_debris(posy,dir){
 	unsigned short j;//variable para controlar los asteroides
 	
 	if(debris_turn == 20){
-		for(j = 0; j <= 15; j++){
-			if(dir == 1){//asteroide moviendose de derecha a izquierda   <--
+		for(j = 0; j <= 14; j++){
+			if(debris[j].dir == 1){//asteroide moviendose de derecha a izquierda   <--
 				debris[j].x -= debris[j].dx
+				if(debri[j].x <= 0){
+					debri[j].x = 128;
+				}
 			}
-			else if(dir == -1){//asteroide moviendose de izquierda a derecha -->
+			else if(debris[j].dir == -1){//asteroide moviendose de izquierda a derecha -->
 				debris[j].x += debris[j].dx
+				if(debri[j].x >= 128){
+					debri[j].x = 0;
+				} 
 			}
 			
 			//Si un asteriode choca con una nave
 			for(i = 0; i < 2; i++){
 				if((debris[j].y >= ship[i].y) && (debris[j].x <= ship[i].y + 6) && (debris[j].x >= ship[i].x) && (debris[j].x <= ship[i].x + 6)){
 					draw_player(ship.x[i], ship[i].y, 0);
-					player[i].x = 40;
-					player[i].y = 60;
+					if(i == 0{
+						player[i].x = 40;
+						player[i].y = 60;
+					}
+					else if(i == 1){
+						player[i].x = 70;
+						player[i].y = 60;
+					}
 				}
 			}
 		}
@@ -77,24 +94,30 @@ void move_debris(posy,dir){
 }
 
 void gen_debris(){
-	int gen_position = rand() % 50;//Genera un num aleatorio que se pasa como parametro para la generacion de asteriodes
-	int side = rand() % 2;
-	signed short direction = 0;
-	
-	if(side == 0){//asteroide moviendose de izquierda a derecha -->
-		direction = -1;
+	unsigned short j;
+	unsigned short posY = 3;
+	for(j = 0; j < 15; j++){
+		int side = rand() % 2;
+		int posX = rand() % 128;
+		//Dar direccion a los asteroides
+		if(side = 0){
+			debri[j].dir = -1;
+		}
+		else if(side = 1){
+			debri[j].dir = 1;
+		}
+		//Dar ubicacion x y a los asteriodes
+		debri[j].y = posY;
+		debri[j].x = posX;
+		posY += 3;
 	}
-	else if(side == 1){//asteriode moviendose de derecha a izquierda   <--
-		direction = 1;
-	}
-	move_debris(gen_position,direction);//pasamos la posicion en x y la direccion del asteriode
 }
 
 void init(){
 	player[0].x =  40;
     player[0].y = 60;
 
-    player[1].x =  70;
+    player[1].x = 70;
     player[1].y = 60;
 
     debris.x = 64;
@@ -234,13 +257,12 @@ void game_over(){
                 break;
             }
         }
-	}
-	
-	
+	}	
 }
 void data_pack() {  //Funcion para empaquetar datos a enviar     ///serial_pack_data //Hay que ver como hago para enviar la ubicacion en y de cada asteroide
       // INFO DE BOLA //
-	  for(int i = 0; i <= 3; i++){
+	  unsigned short i = 0;
+	  for(i = 0; i <= 4; i++){
 		if(i == 0){
 			info[0] = ship[0].y + '0';
 			info[1] = ship[1].y + '0';
@@ -265,7 +287,6 @@ void data_pack() {  //Funcion para empaquetar datos a enviar     ///serial_pack_
 			info[6] = debris[4].y + '0';
 			info[7] = 'O';
 			info[8] = 'K';
-			
 		}
 		else if(i == 2){
 			info[0] = debris[5].y + '0';
@@ -277,7 +298,6 @@ void data_pack() {  //Funcion para empaquetar datos a enviar     ///serial_pack_
 			info[6] = debris[8].y + '0';
 			info[7] = 'O';
 			info[8] = 'K';
-			
 		}
 		else if(i == 3){
 			info[0] = debris[8].x + '0';
@@ -303,35 +323,60 @@ void data_pack() {  //Funcion para empaquetar datos a enviar     ///serial_pack_
 		}
 
 	}
+
 }
-     info[0] = ball.x + '0';
-     info[1] = ball.y + '0';
-
-      // INFO DE SCORE //
-     info[2] = score[0] + '0';
-     info[3] = score[1] + '0';
-
-      //INFO DE LAS PALETAS //
-     info[4] = paddle[0].y + '0';  //Maestro
-     info[5] = paddle[1].y + '0';  // Esclavo
-
-      // DELIMITADORES PARA FUNCION DE LECTURA //
-     info[6] = 'O';
-     info[7] = 'K';
-     info[8] = 0;
-}
-          
-                    
+  
 void desdata_pack(){   // Funcion para extraer datos del paquete recibido por esclavo
-    ball.x = info[0] - '0';
-    ball.y = info[1] - '0';
-
-    score[0] = info[2] - '0';
-    score[1] = info[3] - '0';
-
-    paddle[0].y = info[4] - '0';
-    paddle[1].y = info[5] - '0';
+    unsigned short i = 0;
+	for(i = 0; i <= 4; i++){
+		if(i == 0){
+			ship[0].y   =   info[0] - '0';
+			ship[1].y   =   info[1] - '0';
+			score[0]    =   info[2] - '0';
+			score[1]    =   info[3] - '0';
+			debris[0].y =   info[4] - '0';
+			debris[0].x =   info[5] - '0';
+			debris[1].x =   info[6] - '0';
+		}
+		else if(i == 1){
+			debris[1].y =   info[0] - '0';
+			debris[2].x =   info[1] - '0';
+			debris[2].y =   info[2] - '0';
+			debris[3].x =   info[3] - '0';
+			debris[3].y =   info[4] - '0';
+			debris[4].x =   info[5] - '0';
+			debris[4].y =   info[6] - '0';	
+		}
+		else if(i == 2){
+			debris[5].y =   info[0] - '0';
+			debris[5].x =   info[1] - '0';
+			debris[6].y =   info[2] - '0';
+			debris[6].x =   info[3] - '0';
+			debris[7].y =   info[4] - '0';
+			debris[7].x =   info[5] - '0';
+			debris[8].y =   info[6] - '0';	
+		}
+		else if(i == 3){
+			debris[8].x  =   info[0] - '0';
+			debris[9].x  =   info[1] - '0';
+			debris[9].y  =   info[2] - '0';
+			debris[10].x =   info[3] - '0';
+			debris[10].y =   info[4] - '0';
+			debris[11].x =   info[5] - '0';
+			debris[11].y =   info[6] - '0';		
+		}
+		else if(i == 4){
+			debris[12].y =   info[0] - '0';
+			debris[12].x =   info[1] - '0';
+			debris[13].y =   info[2] - '0';
+			debris[13].x =   info[3] - '0';
+			debris[14].y =   info[4] - '0';
+			debris[14].x =   info[5] - '0';
+		}
+		
+	}
 }
+
 void output_character(char charValue){   
      while (UART1_Tx_Idle()!= 1);
        UART1_Write(charValue);
@@ -430,6 +475,7 @@ void main(){
 				delay_ms(100);
 				Glcd_Fill(0x00);
 				init();
+				gen_debris();
 				while(1){
 					y = ADC_Read(0);
 					if(debris_turn > 10 ){
@@ -448,21 +494,22 @@ void main(){
 						move_player(0,1);//move_player(i, direction) 1 arriba / 2 abajo
 						draw_player(ship[0].x, ship[0].y, 1);//draw_player(x, y, color)
 					}
-					gen_debris();
+					
 					move_ia;
 					draw_player(ship[1].x, ship[1].y, 1);
+					move_debris();
+					draw_time();
 					
 					if(seconds == 50){
 						seconds = 0;
-						minutes +=1;
+						minutes -=1;
 					}
-					if(minutes == 50){
+					if(minutes == 0){
 						game_over();
-						
 					}
 					seconds += 1;
-					
 				}
+				break;
 			
 			
 			case 2:
