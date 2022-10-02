@@ -258,31 +258,30 @@ void move_player(unsigned short i, unsigned short direction){
 
 void game_over(){
         if(score[0] > score[1]){
-                //Glcd_Write_Text('YOU WIN' ,,,)
-                while(1){
-            if(Button(&PORTC,1,1,1)){ //Quiero volver a la portada como si acabara de encender la consola
-                Glcd_Fill(0x00);
-                break;
-            }
-        }
+            while(1){
+				if(Button(&PORTC,1,1,1)){ //Quiero volver a la portada como si acabara de encender la consola
+					Glcd_Fill(0x00);
+					break;
+				}
+			}
         }
         else if(score[0] < score[1]){
                 //Glcd_Write_Text('PC WINS' ,,,)
-                while(1){
-            if(Button(&PORTC,1,1,1)){ //Quiero volver a la portada como si acabara de encender la consola
-                Glcd_Fill(0x00);
-                break;
-            }
-        }
+            while(1){
+				if(Button(&PORTC,1,1,1)){ //Quiero volver a la portada como si acabara de encender la consola
+					Glcd_Fill(0x00);
+					break;
+				}
+			}
         }
         else if(score[0] == score[1]){
                 //Glcd_Write_Text('IT\'S A TIE' ,,,)
-                while(1){
-            if(Button(&PORTC,1,1,1)){ //Quiero volver a la portada como si acabara de encender la consola
-                Glcd_Fill(0x00);
-                break;
-            }
-        }
+            while(1){
+				if(Button(&PORTC,1,1,1)){ //Quiero volver a la portada como si acabara de encender la consola
+					Glcd_Fill(0x00);
+					break;
+				}
+			}
         }        
 }
 void data_pack() {  //Funcion para empaquetar datos a enviar     ///serial_pack_data //Hay que ver como hago para enviar la ubicacion en y de cada asteroide
@@ -417,17 +416,17 @@ void output_data(char *serial_dir){
 }
 
 void input_data(char *text_dir){  
-	 unsigned short i = 0;
-     while(UART1_Data_Ready()==0);
-     UART1_Read_Text(text_dir, "P", 255);
+	unsigned short i = 0;
+    while(UART1_Data_Ready()==0);
+    UART1_Read_Text(text_dir, "P", 255);
 	 
-	 for(i = 0; i < 10; i++){
+	for(i = 0; i < 10; i++){
 		 if(info[i] == 'A'){desdata_pack(0);}
 		 else if(info[i] == 'B'){desdata_pack(1);}
 		 else if(info[i] == 'C'){desdata_pack(2);}
 		 else if(info[i] == 'D'){desdata_pack(3);}
 		 else if(info[i] == 'E'){desdata_pack(4);}
-	 }
+	}
 }
 
 void save_old_data(){
