@@ -289,62 +289,41 @@ void game_over(){
 void data_pack() {  //Funcion para empaquetar datos a enviar     ///serial_pack_data //Hay que ver como hago para enviar la ubicacion en y de cada asteroide
       // INFO DE BOLA //
           unsigned short i = 0;
-          for(i = 0; i <= 4; i++){
+          for(i = 0; i <= 2; i++){
                 if(i == 0){
                         info[0] = ship[0].y + '0';
                         info[1] = ship[1].y + '0';
                         info[2] = score[0] + '0';
                         info[3] = score[1] + '0';
                         info[4] = debris[0].pos + '0';  
-                        info[5] = debris[0].x + '0';  
-                        info[6] = debris[1].x + '0';
+                        info[5] = debris[1].pos + '0';
+						info[6] = debris[2].pos + '0';
                         info[7] = 'A';
                         info[8] = 'P';        
                 }
                 else if(i == 1){
-                        info[0] = debris[1].y + '0';
-                        info[1] = debris[2].x + '0';
-                        info[2] = debris[2].y + '0';
-                        info[3] = debris[3].x + '0';
-                        info[4] = debris[3].y + '0';
-                        info[5] = debris[4].x + '0';
-                        info[6] = debris[4].y + '0';
+                        info[0] = debris[3].pos + '0';
+                        info[1] = debris[4].pos + '0';
+                        info[2] = debris[5].pos + '0';
+                        info[3] = debris[6].pos + '0';
+                        info[4] = debris[7].pos + '0';
+                        info[5] = debris[8].pos + '0';
+                        info[6] = debris[9].pos + '0';
                         info[7] = 'B';
                         info[8] = 'P';
                 }
                 else if(i == 2){
-                        info[0] = debris[5].y + '0';
-                        info[1] = debris[5].x + '0';
-                        info[2] = debris[6].y + '0';
-                        info[3] = debris[6].x + '0';
-                        info[4] = debris[7].y + '0';
-                        info[5] = debris[7].x + '0';
-                        info[6] = debris[8].y + '0';
-                        info[7] = 'C';
-                        info[8] = 'P';
-                }
-                else if(i == 3){
-                        info[0] = debris[8].x + '0';
-                        info[1] = debris[9].x + '0';
-                        info[2] = debris[9].y + '0';
-                        info[3] = debris[10].x + '0';
-                        info[4] = debris[10].y + '0';
-                        info[5] = debris[11].x + '0';
-                        info[6] = debris[11].y + '0';
-                        info[7] = 'D';
-                        info[8] = 'P';
-                }
-                else if(i == 4){
-                        info[0] = debris[12].y + '0';
-                        info[1] = debris[12].x + '0';
-                        info[2] = debris[13].y + '0';
-                        info[3] = debris[13].x + '0';
-                        info[4] = debris[14].y + '0';
-                        info[5] = debris[14].x + '0';
-                        info[6] = 'E';
+                        info[0] = debris[10].pos + '0';
+                        info[1] = debris[11].pos + '0';
+                        info[2] = debris[12].pos + '0';
+                        info[3] = debris[13].pos + '0';
+                        info[4] = debris[14].pos + '0';
+                        info[6] ='C';
                         info[7] = 'P';
                         info[8] = 0;
+                        info[8] = 0;
                 }
+            }
         }
 }
   
@@ -354,44 +333,25 @@ void desdata_pack(unsigned short packet_number){   // Funcion para extraer datos
                         ship[1].y   =   info[1] - '0';
                         score[0]    =   info[2] - '0';
                         score[1]    =   info[3] - '0';
-                        debris[0].y =   info[4] - '0';
-                        debris[0].x =   info[5] - '0';
-                        debris[1].x =   info[6] - '0';
+                        debris[0].pos =   info[4] - '0';
+                        debris[1].pos =   info[5] - '0';
+                        debris[2].pos =   info[6] - '0';
                 }
                 else if(packet_number == 1){
-                        debris[1].y =   info[0] - '0';
-                        debris[2].x =   info[1] - '0';
-                        debris[2].y =   info[2] - '0';
-                        debris[3].x =   info[3] - '0';
-                        debris[3].y =   info[4] - '0';
-                        debris[4].x =   info[5] - '0';
-                        debris[4].y =   info[6] - '0';        
+                        debris[3].pos =   info[0] - '0';
+                        debris[4].pos =   info[1] - '0';
+                        debris[5].pos =   info[2] - '0';
+                        debris[6].pos =   info[3] - '0';
+                        debris[7].pos =   info[4] - '0';
+                        debris[8].pos =   info[5] - '0';
+                        debris[9].pos =   info[6] - '0';        
                 }
                 else if(packet_number == 2){
-                        debris[5].y =   info[0] - '0';
-                        debris[5].x =   info[1] - '0';
-                        debris[6].y =   info[2] - '0';
-                        debris[6].x =   info[3] - '0';
-                        debris[7].y =   info[4] - '0';
-                        debris[7].x =   info[5] - '0';
-                        debris[8].y =   info[6] - '0';        
-                }
-                else if(packet_number == 3){
-                        debris[8].x  =   info[0] - '0';
-                        debris[9].x  =   info[1] - '0';
-                        debris[9].y  =   info[2] - '0';
-                        debris[10].x =   info[3] - '0';
-                        debris[10].y =   info[4] - '0';
-                        debris[11].x =   info[5] - '0';
-                        debris[11].y =   info[6] - '0';                
-                }
-                else if(packet_number == 4){
-                        debris[12].y =   info[0] - '0';
-                        debris[12].x =   info[1] - '0';
-                        debris[13].y =   info[2] - '0';
-                        debris[13].x =   info[3] - '0';
-                        debris[14].y =   info[4] - '0';
-                        debris[14].x =   info[5] - '0';
+                        debris[10].pos =   info[0] - '0';
+                        debris[11].pos =   info[1] - '0';
+                        debris[12].pos =   info[2] - '0';
+                        debris[13].pos =   info[3] - '0';
+                        debris[14].pos =   info[4] - '0';
                 }
                 
         }
@@ -421,8 +381,6 @@ void input_data(char *text_dir){
 		 if(info[i] == 'A'){desdata_pack(0);}
 		 else if(info[i] == 'B'){desdata_pack(1);}
 		 else if(info[i] == 'C'){desdata_pack(2);}
-		 else if(info[i] == 'D'){desdata_pack(3);}
-		 else if(info[i] == 'E'){desdata_pack(4);}
 	}
 }
 void coordinate_pos(){
