@@ -19,6 +19,7 @@ typedef struct debris{
     unsigned short y;
     signed short dx;
     signed short dir;
+	unsigned short pos;
 }escombro;
 
 ships ship[2];
@@ -45,6 +46,7 @@ sbit GLCD_RST_Direction at TRISB5_bit;
 
 
 void draw_player(unsigned short x, unsigned short y,unsigned short color){
+	//print('|')
         Glcd_V_Line(y,y+6, x,color);
         Glcd_V_Line(y,y+6, x+1,color);
         Glcd_V_Line(y,y+6, x+2,color);
@@ -291,13 +293,10 @@ void data_pack() {  //Funcion para empaquetar datos a enviar     ///serial_pack_
                 if(i == 0){
                         info[0] = ship[0].y + '0';
                         info[1] = ship[1].y + '0';
-        
                         info[2] = score[0] + '0';
                         info[3] = score[1] + '0';
-        
-                        info[4] = debris[0].y + '0';  
+                        info[4] = debris[0].pos + '0';  
                         info[5] = debris[0].x + '0';  
-        
                         info[6] = debris[1].x + '0';
                         info[7] = 'A';
                         info[8] = 'P';        
@@ -346,9 +345,7 @@ void data_pack() {  //Funcion para empaquetar datos a enviar     ///serial_pack_
                         info[7] = 'P';
                         info[8] = 0;
                 }
-
         }
-
 }
   
 void desdata_pack(unsigned short packet_number){   // Funcion para extraer datos del paquete recibido por esclavo
@@ -428,6 +425,38 @@ void input_data(char *text_dir){
 		 else if(info[i] == 'E'){desdata_pack(4);}
 	}
 }
+void coordinate_pos(){
+	unsigned short i = 0;
+	unsigned short pos_y = 0;
+	unsigned short pos_x = 0;
+	
+	for(i = 0; i < 15; i++){
+		pos_y = debris[i].y * 128;
+		pos_x = debris[i].x;
+		if (debris[i].y == 0){
+			debris[i].pos = debris[i].x;
+		}
+		else if(debris[i].y != 0){
+			debris[i].pos = pos_y + pos_x;
+		}
+	}
+}
+
+void pos_coordinate(){
+	unsigned short i = 0;
+	unsigned short j = 0;
+	
+	for(i = 0; i < 15; i++){
+		//for(j = 0; j <= 64; j++){
+			//if((j < div_pos) && (div_pos <= j+1)){
+				debris[i].y = debri[i].pos / 128;
+				debris[i].x = (debris[i].y * 128 + abs(debris[i].y * 128 - debris[i].pos));
+				
+				
+			//}
+		//}
+	}
+}
 
 void save_old_data(){
 		unsigned short i = 0;
@@ -437,7 +466,7 @@ void save_old_data(){
 			old_debris[i].x = debris[i].x;
 			old_debris[i].y = debris[i].y;
 			old_debris[i].dx = debris[i].dx;
-			old_debris[i].dir= debris[i].dir;
+			old_debris[i].dir = debris[i].dir;
 		}
 }
      
@@ -652,7 +681,7 @@ void main(){
 						
 						output_character(move_other);
 						input_data(info);
-						desdata_pack ();
+						//desdata_pack ();
 						
 						for(counter = 0; counter < 15; counter ++){
 							if(old_debris[counter].x != debris[counter].x || old_debris[counter].y != debris[counter].y){
