@@ -71,7 +71,7 @@ void erase_player(unsigned short x, unsigned short y,unsigned short direction){
                 Glcd_H_Line(x-2,x+6,y,0);
         }
         else if(direction == 2){//hacia abajo/ borrar la parte superior de la nave
-                Glcd_H_Line(x, x+4, 0);
+                Glcd_H_Line(x, x+4,y, 0);
                 
         }
 }
@@ -497,7 +497,7 @@ void main(){
 					if(turno > 10){
 						turno = 0;
 					}
-					if( y >= 200){//HACIA ABAJO
+					if(y >= 200){//HACIA ABAJO
 						erase_player(ship[0].x, ship[0].y, 2);//erase_player(x,  y,direction) 1 arriba / 2 abajo
 						move_player(0,2);//move_player(i, direction) 1 arriba / 2 abajo
 						draw_player(ship[0].x, ship[0].y, 1);//draw_player(x, y, color)
