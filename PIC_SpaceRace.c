@@ -52,28 +52,26 @@ void draw_player(unsigned short x, unsigned short y,unsigned short color){
         Glcd_V_Line(y,y+6, x+2,color);
         Glcd_V_Line(y,y+6, x+3,color);
         Glcd_V_Line(y,y+6, x+4,color);
-        Glcd_Dot(y, x-1, color);
-        Glcd_Dot(y+1, x-1, color);
-        Glcd_Dot(y, x-2, color);
-        Glcd_Dot(y, x+5, color);
-        Glcd_Dot(y+1, x+5, color);
-        Glcd_Dot(y, x+6, color);
-        Glcd_Dot(y+6, x+5, color);
+        Glcd_Dot(x-1,y, color);
+        Glcd_Dot(x-1,y+1, color);
+        Glcd_Dot(x-2,y, color);
+        Glcd_Dot(x+5, y,color);
+        Glcd_Dot(x+5,y+1, color);
+        Glcd_Dot(x+6, y, color);
+        Glcd_Dot(x+5,y+6, color);
 }
 
 void draw_time(){
-        Glcd_V_Line(minutes,64,64,0);
+        Glcd_V_Line(minutes,0,64,0);
         Glcd_V_Line(0,minutes,64,1);
 }
 
 void erase_player(unsigned short x, unsigned short y,unsigned short direction){
         if(direction == 1){//hacia arriba/ borrar la parte de abajo de la nave
-                Glcd_H_Line(x,x+6,y,0);
-                Glcd_Dot(y+6, x, 0);
-                Glcd_Dot(y+6, x, 0);
+                Glcd_H_Line(x-2,x+6,y,0);
         }
         else if(direction == 2){//hacia abajo/ borrar la parte superior de la nave
-                Glcd_Dot(y+6, x+5, 0);
+                Glcd_H_Line(x, x+4, 0);
                 
         }
 }
@@ -85,20 +83,20 @@ void move_debris(){
         if(debris_turn == 20){
                 for(j = 0; j <= 14; j++){
                         if(debris[j].dir == 1){//asteroide moviendose de derecha a izquierda   <--
-                                Glcd_Dot(debris[j].y, debris[j].x, 0);
+                                Glcd_Dot(debris[j].x,debris[j].y, 0);
 								debris[j].x -= debris[j].dx;
-								Glcd_Dot(debris[j].y, debris[j].x, 1);
+								Glcd_Dot( debris[j].x,debris[j].y, 1);
                                 if(debris[j].x <= 0){
-									Glcd_Dot(debris[j].y, debris[j].x, 0);
+									Glcd_Dot(debris[j].x,debris[j].y, 0);
                                     debris[j].x = 128;
                                 }
                         }
                         else if(debris[j].dir == -1){//asteroide moviendose de izquierda a derecha -->
-                                Glcd_Dot(debris[j].y, debris[j].x, 0);
+                                Glcd_Dot( debris[j].x,debris[j].y, 0);
 								debris[j].x += debris[j].dx;
-								Glcd_Dot(debris[j].y, debris[j].x, 1);
+								Glcd_Dot( debris[j].x,debris[j].y, 1);
                                 if(debris[j].x >= 128){
-									Glcd_Dot(debris[j].y, debris[j].x, 0);
+									Glcd_Dot(debris[j].x,debris[j].y, 0);
                                     debris[j].x = 0;
                                 } 
                         }
@@ -142,7 +140,7 @@ void gen_debris(){
 }
 
 void init(){
-        ship[0].x =  40;
+    ship[0].x = 40;
     ship[0].y = 60;
 
     ship[1].x = 70;
@@ -644,9 +642,9 @@ void main(){
 						}
 						for(counter2 = 0; counter2 < 2; counter2 ++){
 							if(old_ship[counter2].y != ship[counter2].y){
-								draw_player_player(old_ship[counter2].x, old_ship[counter2].y,0);
+								draw_player(old_ship[counter2].x, old_ship[counter2].y,0);
 							}
-							draw_player_player(ship[counter2].x, ship[counter2].y,1);
+							draw_player(ship[counter2].x, ship[counter2].y,1);
 						}
 						draw_time();
 					}
