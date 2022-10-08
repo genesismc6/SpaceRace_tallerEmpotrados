@@ -383,19 +383,20 @@ void input_data(char *text_dir){
 		 else if(info[i] == 'C'){desdata_pack(2);}
 	}
 }
+
 void coordinate_pos(){
 	unsigned short i = 0;
 	unsigned short pos_y = 0;
 	unsigned short pos_x = 0;
 	
 	for(i = 0; i < 15; i++){
-		pos_y = debris[i].y * 128;
+		pos_y = debris[i].y * 127;
 		pos_x = debris[i].x;
 		if (debris[i].y == 0){
 			debris[i].pos = debris[i].x;
 		}
 		else if(debris[i].y != 0){
-			debris[i].pos = pos_y + pos_x;
+			debris[i].pos = pos_y + pos_x + 1;
 		}
 	}
 }
@@ -405,14 +406,8 @@ void pos_coordinate(){
 	unsigned short j = 0;
 	
 	for(i = 0; i < 15; i++){
-		//for(j = 0; j <= 64; j++){
-			//if((j < div_pos) && (div_pos <= j+1)){
-				debris[i].y = debri[i].pos / 128;
-				debris[i].x = (debris[i].y * 128 + abs(debris[i].y * 128 - debris[i].pos));
-				
-				
-			//}
-		//}
+				debris[i].y = debri[i].pos / 127;
+				debris[i].x = abs(debris[i].y * 127 - debris[i].pos) -1 //abs(debris[i].y * 127 - debris[i].pos));
 	}
 }
 
@@ -603,9 +598,8 @@ void main(){
 						}
 						
 						move_debris();
-						move_debris();
 						draw_time();
-						
+						coordinate_pos();
 						data_pack();
 						output_data(info);
 						
@@ -639,6 +633,7 @@ void main(){
 						
 						output_character(move_other);
 						input_data(info);
+						pos_coordinate();
 						//desdata_pack ();
 						
 						for(counter = 0; counter < 15; counter ++){
